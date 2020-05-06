@@ -2,7 +2,9 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser')
 var app = express();
-var server = app.listen(3000, () => {
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+var server = http.listen(3000, () => {
  console.log('server is running on port', server.address().port);
 });
 var dbUrl = 'mongodb://application:chatbot2020@messages-shard-00-00-bpbe7.mongodb.net:27017,messages-shard-00-01-bpbe7.mongodb.net:27017,messages-shard-00-02-bpbe7.mongodb.net:27017/test?ssl=true&replicaSet=messages-shard-0&authSource=admin&retryWrites=true&w=majority'
@@ -23,6 +25,10 @@ app.post('/messages', (req, res) => {
   message.save((err) =>{
     if(err)
       sendStatus(500);
+    io.emit('message', req.body);
     res.sendStatus(200);
   })
+})
+io.on('connection', () =>{
+ console.log('a user is connected')
 })
