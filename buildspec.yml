@@ -5,4 +5,4 @@ phases:
   build:
     commands:
       - aws s3 cp s3://keyezops/mykey.pem . 
-      - ssh -i "mykey.pem" ec2-user@18.222.125.246 "sudo su && cd && git pull https://github.com/yagoserpa/ezops-test-yago && cd ezops-test-yago/ && docker run -d -p 3000:3000 simple-chatbot:latest ." 
+      - ssh -o "StrictHostKeyChecking no" -i "mykey.pem" ec2-user@18.222.125.246 "sudo su && cd && git pull https://github.com/yagoserpa/ezops-test-yago && cd ezops-test-yago/ && docker run -d -p 3000:3000 simple-chatbot:latest ." 
