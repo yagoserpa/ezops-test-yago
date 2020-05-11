@@ -1,0 +1,9 @@
+version: 0.0  
+os: linux  
+files:  
+  - source: /root/
+    destination: /root/workspace/ezops-test-yago  
+hooks:  
+  ApplicationStart:  
+    - location: scripts/start_server.sh  
+      timeout: 300
