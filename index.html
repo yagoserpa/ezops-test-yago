@@ -1,56 +1,185 @@
-<!DOCTYPE html>
 <html>
-
-<head>
- <title>Simple ChatBot</title>
- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
- <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
- <script src="/socket.io/socket.io.js"></script>
-</head>
-
-<body>
-<div class="container">
- <br>
- <div class="jumbotron">
- <h1 class="display-4">Send Message</h1>
- <br>
- <input id = "name" class="form-control" placeholder="Name">
- <br>
- <textarea id = "message" class="form-control" placeholder="Your Message Here">
- </textarea>
- <br>
- <button id="send" class="btn btn-success">Send</button>
- </div>
- <div id="messages">
-</div>
-</div>
-<script>
-    var socket = io();
-    console.log(socket);
-    $(() => {
-    $("#send").click(()=>{
-       sendMessage({
-          name: $("#name").val(),
-          message:$("#message").val()});
-        })
-      getMessages()
+ 
+  <head>
+    <title>Simple ChatBot</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <evlist></evlist>
+ 
+  <body>
+    <div class="container">
+      <br>
+      <div class="jumbotron">
+        <h1 class="display-4">Send Message</h1>
+        <br>
+        <input id="name" class="form-control" placeholder="Name">
+        <br>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1" name="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1">Send custom message?</label>
+        </div>
+        <br>
+ 
+        <div id="custom-message">
+          <textarea id="message" class="form-control" placeholder="Your Message Here"> </textarea>
+          <br>
+        </div>
+ 
+        <div id="dropdown-message">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown button
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">Hello!</a>
+              <a class="dropdown-item" href="#">Nice to be here.</a>
+              <a class="dropdown-item" href="#">Great to be in this chat.</a>
+            </div>
+          </div>
+        </div>
+ 
+ 
+        <br>
+        <button id="send" class="btn btn-success">Send</button>
+      </div>
+      <div id="messages">
+      </div>
+    </div>
+    <script>
+ 
+      var socket = io();
+      console.log(socket);
+ 
+    // Getting text when dropdown is clicked.
+    $('.dropdown-item').click(function() {
+        console.log($(this).text());
     })
-    socket.on('message', addMessages)
-    function addMessages(message){
-    $("#messages").append(`
+     
+      // initial state (hide custom message div)
+      $('#custom-message').hide();
+     
+      $('input[name="exampleCheck1"]').change(function () {
+          if (this.checked) {
+              // hide dropdown menu
+              $('#dropdown-message').hide();
+              // show custom message div
+              $('#custom-message').show();
+          }
+          else {
+            // hide dropdown menu
+              $('#dropdown-message').show();
+              // show custom message div
+              $('#custom-message').hide();
+          }
+      });
+     
+      console.log()
+     
+      $(() => {
+        $("#send").click(() => {
+          sendMessage({
+            name: $("#name").val(),
+            message: $("#message").val()
+          });
+        })
+        getMessages()
+      })
+ 
+ 
+      socket.on('message', addMessages)
+ 
+      function addMessages(message) {
+        // TODO adicionar logica de condicional para pegar mensagem.
+        // se custom message checkbox is clicked then message = X
+        // else message = Y
+ 
+        $("#messages").append(`
       <h4> ${message.name} </h4>
       <p>  ${message.message} </p>`)
-    }
-    function getMessages(){
-    $.get('http://18.222.125.246:3000/messages', (data) => {
-    data.forEach(addMessages);
-    })
-    }
-    function sendMessage(message){
-    $.post('http://18.222.125.246:3000/messages', message)
-    }
-</script>
-</body>
+      }
+ 
+      function getMessages() {
+        $.get('http://18.222.125.246:3000/messages', (data) => {
+          data.forEach(addMessages);
+        })
+      }
+ 
+      function sendMessage(message) {
+        $.post('http://18.222.125.246:3000/messages', message)
+      }
+ 
+    </script>
+ 
+ 
+    <style>
+      .oJUC5Y3oD0l4IeUEuV9v {
+        color: #ff7700 !important;
+      }
+ 
+      .oJUC5Y3oD0l4IeUEuV9v.ba-outline {
+        outline-color: #ff7700
+      }
+ 
+      .oJUC5Y3oD0l4IeUEuV9v.RS00daP5N0zy:hover,
+      .oJUC5Y3oD0l4IeUEuV9v.RS00daP5N0zy.active {
+        color: #fc922e !important;
+      }
+ 
+      .JOCD2JA4hqibDWX {
+        background-color: #ff7700 !important;
+      }
+ 
+      .JOCD2JA4hqibDWX.RS00daP5N0zy:hover,
+      .JOCD2JA4hqibDWX.RS00daP5N0zy.active {
+        background: #fc922e !important;
+      }
+ 
+      .ba-border-primary {
+        border-color: #ed6206 !important
+      }
+ 
+      .UM64eTeWQ9SC59tW {
+        background: #ff7700 !important;
+        color: white !important;
+      }
+ 
+      .UM64eTeWQ9SC59tW.RS00daP5N0zy:hover,
+      .UM64eTeWQ9SC59tW.RS00daP5N0zy.active {
+        background: #fb952f !important;
+      }
+ 
+      .ba-color-secondary {
+        color: #ff7700 !important;
+      }
+ 
+      .ba-color-secondary.RS00daP5N0zy:hover,
+      .ba-color-secondary.RS00daP5N0zy.active {
+        color: #fb952f !important;
+      }
+ 
+      .ba-color-tertiary {
+        color: #404348 !important
+      }
+ 
+      .ba-color-tertiary.RS00daP5N0zy:hover,
+      .ba-color-tertiary.RS00daP5N0zy.active {
+        color: #5c5c5c !important
+      }
+ 
+      .egwLFHg4u0Dr {
+        background: #404348 !important
+      }
+ 
+      .ba-bg-tertiary.RS00daP5N0zy:hover,
+      .ba-bg-tertiary.RS00daP5N0zy.active {
+        background: #5c5c5c !important
+      }
+ 
+    </style>
+  </body>
+ 
 </html>
