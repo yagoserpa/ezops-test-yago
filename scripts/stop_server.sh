@@ -1,4 +1,5 @@
 #!/bin/bash
-export PM2_HOME=/root/workspace/ezops-test-yago/.pm2
-cd /root/workspace/ezops-test-yago/
-pm2 delete server
+PID=$(ps -fuxa | grep server | grep -v auto | awk '{print $2}')
+if [ -z $PID ];then
+	kill -9 $PID
+fi
