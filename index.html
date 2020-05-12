@@ -54,26 +54,19 @@
       var socket = io();
       console.log(socket);
  
-    // Getting text when dropdown is clicked.
-    $('.dropdown-item').click(function() {
-	$('.dropdown-item').focus();
+    $('.dropdown-item').click(function() {	
         console.log($(this).text());
     })
      
-      // initial state (hide custom message div)
       $('#custom-message').hide();
      
       $('input[name="exampleCheck1"]').change(function () {
           if (this.checked) {
-              // hide dropdown menu
               $('#dropdown-message').hide();
-              // show custom message div
               $('#custom-message').show();
           }
           else {
-            // hide dropdown menu
               $('#dropdown-message').show();
-              // show custom message div
               $('#custom-message').hide();
           }
       });
@@ -94,9 +87,6 @@
       socket.on('message', addMessages)
  
       function addMessages(message) {
-        // TODO adicionar logica de condicional para pegar mensagem.
-        // se custom message checkbox is clicked then message = X
-        // else message = Y
  
         $("#messages").append(`
       <h4> ${message.name} </h4>
