@@ -55,7 +55,11 @@
       console.log(socket);
  
     $('.dropdown-item').click(function() {	
-        console.log($(this).text());
+        //console.log($(this).text());
+        sendMessage({
+            name: $("#name").val(),
+            message: $((this).text())
+        });
     })
      
       $('#custom-message').hide();
